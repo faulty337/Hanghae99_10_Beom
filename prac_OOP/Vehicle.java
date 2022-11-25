@@ -1,4 +1,4 @@
-public class Transportation {
+public class Vehicle {
     //교통수단
 
     protected int number; //번호

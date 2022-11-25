@@ -1,4 +1,5 @@
-public class Taxi extends Transportation implements PublicTransport{
+
+public class Taxi extends Vehicle implements PublicTransport{
     static int taxiIndex;
     private final int MAXPASSENGER = 4; //최대 승객수
     private String destination;
@@ -10,6 +11,11 @@ public class Taxi extends Transportation implements PublicTransport{
     private int preCost;
     private int totalCost;
     
+
+    enum status{
+        일반,
+        운행중
+    }
     Taxi(){
         number = taxiIndex++;
     }
@@ -71,6 +77,7 @@ public class Taxi extends Transportation implements PublicTransport{
         this.prePassenger += Passenger;
         return true;
     };
+    
     @Override
     public void useOil(int oil) {
         this.oil -= oil;
@@ -120,5 +127,49 @@ public class Taxi extends Transportation implements PublicTransport{
     public void setdestination(String destination) {
         this.destination = destination;
         
+    }
+
+    public static int getTaxiIndex() {
+        return taxiIndex;
+    }
+
+    public static void setTaxiIndex(int taxiIndex) {
+        Taxi.taxiIndex = taxiIndex;
+    }
+
+    public void setDestination(String destination) {
+        this.destination = destination;
+    }
+
+    public int getDefaultDistance() {
+        return defaultDistance;
+    }
+
+    public void setDefaultDistance(int defaultDistance) {
+        this.defaultDistance = defaultDistance;
+    }
+
+    public void setDefaultCost(int defaultCost) {
+        this.defaultCost = defaultCost;
+    }
+
+    public int getCost() {
+        return cost;
+    }
+
+    public void setCost(int cost) {
+        this.cost = cost;
+    }
+
+    public int getPreCost() {
+        return preCost;
+    }
+
+    public void setPreCost(int preCost) {
+        this.preCost = preCost;
+    }
+
+    public void setTotalCost(int totalCost) {
+        this.totalCost = totalCost;
     }
 }

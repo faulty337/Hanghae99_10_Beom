@@ -1,4 +1,4 @@
-public class Bus extends Transportation implements PublicTransport{
+public class Bus extends Vehicle implements PublicTransport{
     private static int busIndex;
     private String status = "운행중";
     private final int MAXPASSENGER = 30; //최대 승객수
@@ -23,8 +23,8 @@ public class Bus extends Transportation implements PublicTransport{
     @Override
     public void end() {
         status = "차고지행";
-        prePassenger = 0;
-        totalPassenger = 0;
+        setPrePassenger(0);
+        setTotalCost(0);
     }
 
     @Override
@@ -74,7 +74,9 @@ public class Bus extends Transportation implements PublicTransport{
     public String getDestination() {
         return destination;
     }
-
+    public void setTotalCost(int totalCost) {
+        this.totalCost = totalCost;
+    }
     
     @Override
     public int getTotalCost() {
