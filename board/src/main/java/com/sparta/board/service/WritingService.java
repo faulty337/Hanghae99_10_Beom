@@ -34,14 +34,16 @@ public class WritingService {
         List<Writing> writingList = writingRepository.findAll();
         List<WritingResponseDto> responseList = new ArrayList<>();
         for(Writing writing : writingList){
-            responseList.add(new WritingResponseDto(writing));
+            responseList.add(new WritingResponseDto());
         }
         return responseList;
     }
 
     @Transactional
     public WritingResponseDto getWriting(Long id){
-        WritingResponseDto writingResponseDto = new WritingResponseDto(writingRepository.findById(id).orElseThrow(()-> new NotFoundExtion("인덱스 오류")));
+        Writing writing = writingRepository.findById(id).orElseThrow(()-> new NotFoundExtion("인덱스 오류"));
+        WritingResponseDto writingResponseDto = new WritingResponseDto();
+        //이건 객체지향이 아니다 NotFound라는 에러는 내가 커스텀한 에러이기 때문
         return writingResponseDto;
     }
 
@@ -49,7 +51,7 @@ public class WritingService {
     public WritingResponseDto createWriting(WritingRequestDto writingRequestDto){
         Writing writing = new Writing(writingRequestDto.getUsername(), writingRequestDto.getPassword(), writingRequestDto.getTitle(), writingRequestDto.getContent());
         writingRepository.save(writing);
-        WritingResponseDto writingResponseDto = new WritingResponseDto(writing);
+        WritingResponseDto writingResponseDto = new WritingResponseDto(writing.getId(), writing.getTitle(),writing.getTitle(), writing.getContent(), writing.getCreatedAt());
         return writingResponseDto;
     }
 
@@ -59,9 +61,9 @@ public class WritingService {
         Writing writing = writingRepository.findById(id).orElseThrow(()-> new NotFoundExtion("인덱스 오류"));
 
         writing.update(writingRequestDto.getTitle(), writingRequestDto.getContent()); //업데이트 부분..???
-        writingRepository.save(writing);
+//        writingRepository.save(writing);
 
-        WritingResponseDto writingResponseDto = new WritingResponseDto(writing);
+        WritingResponseDto writingResponseDto = new WritingResponseDto(writing.getId(), writing.getTitle(),writing.getTitle(), writing.getContent(), writing.getCreatedAt());
         return writingResponseDto;
 
 

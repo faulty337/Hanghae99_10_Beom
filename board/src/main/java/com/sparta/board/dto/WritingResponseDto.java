@@ -16,15 +16,7 @@ public class WritingResponseDto {
     String title;
     String username;
     String content;
-
     LocalDateTime createAt;
 
-    public WritingResponseDto(Writing writing) {
-        this.id = writing.getId();
-        this.title = writing.getTitle();
-        this.username = writing.getUsername();
-        this.content = writing.getContent();
-        this.createAt = writing.getCreatedAt();
-    }
 
 }
