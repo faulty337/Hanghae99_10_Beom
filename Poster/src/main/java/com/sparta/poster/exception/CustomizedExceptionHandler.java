@@ -3,7 +3,7 @@
 // (powered by FernFlower decompiler)
 //
 
-package exception;
+package com.sparta.poster.exception;
 
 import java.util.Date;
 import org.springframework.http.HttpStatus;
@@ -23,7 +23,7 @@ public class CustomizedExceptionHandler extends ResponseEntityExceptionHandler {
     @ExceptionHandler({Exception.class})
     public final ResponseEntity<Object> allException(Exception e, WebRequest request) {
         ExceptionResponse exceptionResponse = new ExceptionResponse(new Date(), e.getMessage(), request.getDescription(false));
-        return new ResponseEntity<>(exceptionResponse, HttpStatus.INTERNAL_SERVER_ERROR);
+        return new ResponseEntity<>(exceptionResponse, HttpStatus.BAD_REQUEST);
     }
 
 //    @ExceptionHandler({NotFoundExtion.class})

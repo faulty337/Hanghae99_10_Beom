@@ -1,4 +1,4 @@
-package exception;
+package com.sparta.poster.exception;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
