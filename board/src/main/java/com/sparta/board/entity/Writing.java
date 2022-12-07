@@ -27,10 +27,16 @@ public class Writing extends Timestamped{
     @Column(nullable = false)
     private String content;
 
+
+    private void setTitle(String title){
+
+    }
     public void update(String title, String contents){
         this.title = title;
         this.content = contents;
     }
+
+
 
     public Writing(String username, String password, String title, String content) {
         this.username = username;
