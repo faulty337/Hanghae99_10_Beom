@@ -31,18 +31,7 @@ public class PosterController {
         ResponseMessage responseMessage = new ResponseMessage(StatusEnum.OK, "조회 성공", posterService.getPosterList());
         return new ResponseEntity<>(responseMessage, HttpStatus.OK);
     }
-//    @GetMapping("/test")
-//    public String getTest(
-//            @CookieValue(name = "Authorization", defaultValue = "") String token){
-//        return "token : " + token;
-//    }
 
-//    @PostMapping("/")
-//    public ResponseEntity<ResponseMessage> createPoster(
-//            @RequestBody RequestPosterDto requestPosterDto,
-//            @CookieValue(name = "Authorization", defaultValue = "") String token){
-//        return null;
-//    }
     @PostMapping("/")
     public ResponseEntity<ResponseMessage> createPoster(
             @RequestBody RequestPosterDto requestPosterDto,

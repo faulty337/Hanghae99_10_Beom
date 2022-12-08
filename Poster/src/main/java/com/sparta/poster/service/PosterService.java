@@ -2,9 +2,12 @@ package com.sparta.poster.service;
 
 import com.sparta.poster.JwtUtil;
 import com.sparta.poster.dto.RequestPosterDto;
+import com.sparta.poster.dto.ResponseCommentDto;
 import com.sparta.poster.dto.ResponsePosterDto;
 import com.sparta.poster.dto.UpdatePosterDto;
+import com.sparta.poster.entity.Comment;
 import com.sparta.poster.entity.Poster;
+import com.sparta.poster.entity.UserRoleEnum;
 import com.sparta.poster.repostiory.PosterRepository;
 import io.jsonwebtoken.Claims;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class PosterService {
@@ -31,38 +35,22 @@ public class PosterService {
         List<Poster> posterList = posterRepository.findAll();
 
         for(Poster poster : posterList){
-            responsePosterDtoList.add(ResponsePosterDto.builder()
-                            .posterId(poster.getId())
-                            .title(poster.getTitle())
-                            .content(poster.getContent())
-                            .username(poster.getUsername())
-                            .createAt(poster.getCreatedAt()).build());
+            responsePosterDtoList.add(new ResponsePosterDto(poster));
         }
         return responsePosterDtoList;
     }
 
     @Transactional
     public ResponsePosterDto createPoster(RequestPosterDto requestPosterDto, String token){
-        Claims tokenClaims;
-        try{
-            tokenClaims =  jwtUtil.getUserInfoFromToken(token);
-        }catch (Exception e){
-            System.out.println(e);
-            throw new IllegalArgumentException("잘못된 토큰입니다.");
-        }
-
+        Claims tokenClaims = checkToken(token);
         Poster poster = posterRepository.save(Poster.builder()
                 .title(requestPosterDto.getTitle())
                 .content(requestPosterDto.getContent())
-                .username(tokenClaims.getSubject())
+                .commentList(new ArrayList<>())
+                .username(tokenClaims.get("username").toString())
                 .build());
 
-        return ResponsePosterDto.builder()
-                .posterId(poster.getId())
-                .title(poster.getTitle())
-                .content(poster.getContent())
-                .username(poster.getUsername())
-                .createAt(poster.getCreatedAt()).build();
+        return new ResponsePosterDto(poster);
     }
 
     @Transactional(readOnly = true)
@@ -70,58 +58,46 @@ public class PosterService {
         Poster poster = posterRepository.findById(posterId).orElseThrow(
                 () -> new IllegalArgumentException("잘못된 id입니다.")
         );
-        return ResponsePosterDto.builder()
-                .posterId(poster.getId())
-                .title(poster.getTitle())
-                .content(poster.getContent())
-                .username(poster.getUsername())
-                .createAt(poster.getCreatedAt()).build();
+        return new ResponsePosterDto(poster);
 
     }
 
     @Transactional
     public ResponsePosterDto updatePoster(UpdatePosterDto updatePosterDto, Long posterId, String token){
-        Claims tokenClaims;
-        try{
-            tokenClaims =  jwtUtil.getUserInfoFromToken(token);
-        }catch (Exception e){
-            System.out.println(e);
-            throw new IllegalArgumentException("잘못된 토큰입니다.");
-        }
+        Claims tokenClaims = checkToken(token);
         Poster poster = posterRepository.findById(posterId).orElseThrow(
                 ()-> new IllegalArgumentException("잘못된 게시물 입니다.")
         );
-
-        if(!poster.getUsername().equals(tokenClaims.getSubject())){
+//        System.out.println(tokenClaims.get("username"));
+//        System.out.println(tokenClaims.get("auth"));
+        System.out.println(tokenClaims.get("adminRole").getClass() + " " + UserRoleEnum.Admin.getClass());
+        if(!poster.getUsername().equals(tokenClaims.get("username").toString()) && !tokenClaims.get("adminRole").equals(UserRoleEnum.Admin.toString())){
             throw new IllegalArgumentException("해당 게시물에 권한이 없습니다.");
         }
 
         poster.update(updatePosterDto.getTitle(), updatePosterDto.getContent());
 
-        return ResponsePosterDto.builder()
-                .posterId(poster.getId())
-                .title(poster.getTitle())
-                .content(poster.getContent())
-                .username(poster.getUsername())
-                .createAt(poster.getCreatedAt()).build();
+        return new ResponsePosterDto(poster);
     }
     @Transactional
     public Long deletePoster(Long posterId, String token){
-        Claims tokenClaims;
-        try{
-            tokenClaims =  jwtUtil.getUserInfoFromToken(token);
-        }catch (Exception e){
-            System.out.println(e);
-            throw new IllegalArgumentException("잘못된 토큰입니다.");
-        }
+        Claims tokenClaims = checkToken(token);
         Poster poster = posterRepository.findById(posterId).orElseThrow(
                 ()-> new IllegalArgumentException("잘못된 게시물 입니다.")
         );
-        if(!poster.getUsername().equals(tokenClaims.getSubject())){
+        if(!poster.getUsername().equals(tokenClaims.get("username").toString()) && !tokenClaims.get("adminRole").equals(UserRoleEnum.Admin.toString())){
             throw new IllegalArgumentException("해당 게시물에 권한이 없습니다.");
         }
         posterRepository.deleteById(posterId);
         return posterId;
+    }
+
+    private Claims checkToken(String token){
+        try{
+            return jwtUtil.getUserInfoFromToken(token);
+        }catch (Exception e){
+            throw new IllegalArgumentException("잘못된 토큰입니다.");
+        }
     }
 
 }

@@ -1,6 +1,7 @@
 package com.sparta.poster;
 
 
+import com.sparta.poster.entity.UserRoleEnum;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import lombok.RequiredArgsConstructor;
@@ -39,12 +40,12 @@ public class JwtUtil {
 
 
     // 토큰 생성
-    public String createToken(String username, Long userId) {
+    public String createToken(String username, UserRoleEnum role) {
         Date date = new Date();
         return BEARER_PREFIX + //토큰에 붙는 단순 문장
                 Jwts.builder()
-                        .setSubject(username)  //subject 공간에 username 집어넣기
-                        .claim(AUTHORIZATION_KEY, userId) //claim이라는 공간에 유저의 권한을 집어넣는데 이때 그 권한을 가져올 때는 AUTHORIZATION_KEY를 활용
+                        .claim("username", username)
+                        .claim("adminRole", role) //claim이라는 공간에 유저의 권한을 집어넣는데 이때 그 권한을 가져올 때는 AUTHORIZATION_KEY를 활용
                         .setExpiration(new Date(date.getTime() + TOKEN_TIME)) //토큰의 유효기간 지정
                         .setIssuedAt(date)
                         .signWith(key, signatureAlgorithm) //토큰 암호화를 하는 부분, 키와 알고리즘을 매개변수로 전달

@@ -7,6 +7,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
+
 @Getter
 @Entity
 @Builder
@@ -25,9 +28,15 @@ public class Poster extends Timestamped {
 
     private String content;
 
+    @OneToMany(mappedBy = "poster")
+    private List<Comment> commentList = new ArrayList<>();
     public void update(String title, String content){
         this.title = title;
         this.content = content;
     }
 
+    public void addComment(Comment comment){
+        this.commentList.add(comment);
+        System.out.println("size : " + commentList.size());
+    }
 }

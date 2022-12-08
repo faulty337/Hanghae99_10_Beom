@@ -21,8 +21,11 @@ public class User extends Timestamped{
     @Column(nullable = false)
     private String password;
 
-    public User(String username, String password){
+    private UserRoleEnum role;
+
+    public User(String username, String password, UserRoleEnum role){
         this.username = username;
         this.password = password;
+        this.role = role;
     }
 }
